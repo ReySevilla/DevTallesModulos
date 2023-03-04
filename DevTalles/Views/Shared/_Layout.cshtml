@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using DevTalles.Data;
+@using DevTalles.Utilities;
+@inject IHttpContextAccessor httpAccesor
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -35,6 +40,32 @@
                                 <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Crear Nuevo Usuario</a></li>
                             </ul>
                         </li>
+
+                        <li>
+                            @*comprueba si hay una sesión de CarroCompras en la solicitud. Si hay una sesión, se muestra 
+                            el número de artículos en el carrito de la compra. Si no hay una sesión, se muestra un enlace de carrito de compras con 0 artículos.*@
+
+                                @if (httpAccesor.HttpContext.Session.Get<List<CarroCompra>>(@WC.VariableSession)!= null)
+                                {
+
+                                    <a asp-action="Index" asp-controller="Carro" class="nav-link">
+                                        @{var count = httpAccesor.HttpContext.Session.Get<List<CarroCompra>>(@WC.VariableSession).Count();}
+                                        <i class="fas fa-shopping-cart"></i> &nbsp; (@count)
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#" class="nav-link">
+                                   
+                                    <i class="fas fa-shopping-cart"></i> &nbsp; (0)
+                                </a>
+                            }
+
+
+                            
+                        </li>
+
+
                     </ul>
                     
                 </div>
