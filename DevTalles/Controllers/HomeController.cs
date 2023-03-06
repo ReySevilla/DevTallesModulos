@@ -59,6 +59,35 @@ namespace DevTalles.Controllers
 		}
 
 
+        public IActionResult dada(int id)
+        {
+            List<CarroCompra> listaCompra = new List<CarroCompra>();
+
+            if (HttpContext.Session.Get<IEnumerable<CarroCompra>>(@WC.VariableSession) != null
+                && HttpContext.Session.Get<IEnumerable<CarroCompra>>(WC.VariableSession).Count() > 0)
+            {
+                listaCompra = HttpContext.Session.Get<List<CarroCompra>>(@WC.VariableSession);
+            }
+
+
+            DetalleProductoVM model = new()
+            {
+                curso = db.Cursos.Include(c => c.Categoria).Include(sb => sb.SubCategoria).Where(c => c.Id == id).FirstOrDefault(),
+                ExisteEnCarro = false
+
+            };
+
+            foreach (var item in listaCompra)
+            {
+                if (item.CursoId == id)
+                {
+                    model.ExisteEnCarro = true;
+                }
+            }
+            return View(model);
+        }
+
+
         [HttpPost , ActionName("Detalle")] 
         public IActionResult DetallePost(int id)
         { //e crea una lista de objetos CarroCompra para almacenar los cursos. Luego, se verifica si hay elementos en la sesión,
