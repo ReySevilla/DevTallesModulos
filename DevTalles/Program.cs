@@ -1,4 +1,5 @@
 using DevTalles.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,14 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//Esta línea de código agrega un servicio al contenedor de inyección de dependencias
+//Esta lï¿½nea de cï¿½digo agrega un servicio al contenedor de inyecciï¿½n de dependencias
 //que le permite obtener el contexto HTTP actual en los controladores de ASP.NET Core
 
 
 
 
-//Esta línea de código  agrega el servicio de sesión al contenedor de inyección de dependencias.
-//Establece la duración de tiempo de inactividad de la sesión en 10 minutos
+//Esta lï¿½nea de cï¿½digo  agrega el servicio de sesiï¿½n al contenedor de inyecciï¿½n de dependencias.
+//Establece la duraciï¿½n de tiempo de inactividad de la sesiï¿½n en 10 minutos
 //y establece la propiedad de la Cookie para HttpOnly y Essential a True.
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(Options =>
@@ -24,8 +25,10 @@ builder.Services.AddSession(Options =>
 });
 
 
-
-
+//Agregamos Identity a nuestra aplicacion
+builder.Services.AddIdentity<IdentityUser,IdentityRole>()
+    .AddDefaultTokenProviders().AddDefaultUI()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
 
@@ -48,10 +51,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
-
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
